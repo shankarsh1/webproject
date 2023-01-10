@@ -1,5 +1,6 @@
 var express = require("express");
 var requests = require("requests");
+const mongoose = require("mongoose");
 var path = require("path");
 var hbs = require("hbs");
 var app = express();
@@ -11,6 +12,14 @@ app.set("views", templatePath);
 hbs.registerPartials(partialPath);
 //console.log(staticPath);
 //app.use(express.static(staticPath));
+mongoose.set("strictQuery", false);
+mongoose
+	.connect("mongodb://localhost:27017/school", {
+		useNewUrlParser: true,
+		useUnifiedTopology: true,
+	})
+	.then(() => console.log("connected successfully"))
+	.catch((err) => console.log(err));
 
 app.get("/", function (req, res) {
 	res.render("index", {
