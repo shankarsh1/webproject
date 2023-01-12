@@ -12,15 +12,98 @@ app.set("views", templatePath);
 hbs.registerPartials(partialPath);
 //console.log(staticPath);
 //app.use(express.static(staticPath));
+//connection creatation & create new db if not created
 mongoose.set("strictQuery", false);
 mongoose
-	.connect("mongodb://localhost:27017/school", {
+	.connect("mongodb://127.0.0.1:27017/school", {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})
 	.then(() => console.log("connected successfully"))
 	.catch((err) => console.log(err));
 
+const studentSchema = new mongoose.Schema({
+	name: {
+		type: String,
+		required: true,
+	},
+	type: String,
+	email: String,
+	moile: String,
+	photo: String,
+	videos: Number,
+	author: String,
+	is_active: Boolean,
+	is_status: Boolean,
+	created_at: {
+		type: Date,
+		default: Date.now,
+	},
+	updated_at: {
+		type: Date,
+		default: Date.now,
+	},
+});
+const Student = new mongoose.model("Students", studentSchema);
+const createDocument = async () => {
+	try {
+		const reactStudentList = new Student({
+			name: "Uma Shankar",
+			type: "silver",
+			email: "indus@gmail.com",
+			moile: "9015385879",
+			photo: "uma.png",
+			videos: 90,
+			author: "Lsten",
+			is_active: true,
+			is_status: true,
+		});
+		const nodeStudentList = new Student({
+			name: "Node",
+			type: "silver",
+			email: "indus@gmail.com",
+			moile: "9015385879",
+			photo: "uma.png",
+			videos: 90,
+			author: "Lsten",
+			is_active: true,
+			is_status: true,
+		});
+		const angularStudentList = new Student({
+			name: "Angular",
+			type: "silver",
+			email: "indus@gmail.com",
+			moile: "9015385879",
+			photo: "uma.png",
+			videos: 90,
+			author: "Lsten",
+			is_active: true,
+			is_status: true,
+		});
+		//const result = await reactStudentList.save();
+		const result = await Student.insertMany([
+			reactStudentList,
+			nodeStudentList,
+			angularStudentList,
+		]);
+		console.log(result);
+	} catch (error) {
+		console.log(error);
+	}
+};
+const findDocument = async () => {
+	try {
+		const result = await Student.find({ type: "silver", name: "Node" }).select({
+			name: 1,
+			type: 1,
+		});
+		console.log(result);
+	} catch (error) {
+		console.log(error);
+	}
+};
+//createDocument();
+findDocument();
 app.get("/", function (req, res) {
 	res.render("index", {
 		title:
